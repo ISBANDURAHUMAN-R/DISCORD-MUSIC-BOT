@@ -1,4 +1,4 @@
-"""VOIDKAGE MUSIC - Configuration Management Module.
+"""Void Vibe — Configuration Management Module.
 
 Handles loading, validating, and sanitizing configuration variables
 from the environment and .env file.
@@ -43,7 +43,7 @@ class Config:
     log_level: str
     default_volume: int
     guild_id: Optional[int]
-    embed_color: int = 0x8B5CF6  # VOIDKAGE Neon Purple
+    embed_color: int = 0x7B2CBF  # Void Vibe Deep Neon Purple
     embed_color_error: int = 0xEF4444  # Crimson
     embed_color_success: int = 0x10B981  # Emerald
     embed_color_warning: int = 0xF59E0B  # Amber
@@ -119,7 +119,7 @@ class Config:
 
     def print_diagnostics(self, logger: logging.Logger) -> None:
         """Print safe startup diagnostics without revealing secrets."""
-        logger.info("================ VOIDKAGE MUSIC CONFIGURATION ================")
+        logger.info("================ Void Vibe CONFIGURATION ================")
         logger.info("Discord Token:       %s", _mask_secret(self.discord_token))
         logger.info("Lavalink URI:        %s", self.lavalink_uri)
         logger.info("Lavalink Password:   %s", _mask_secret(self.lavalink_password))
@@ -127,4 +127,4 @@ class Config:
         logger.info("Log Level:           %s", self.log_level)
         logger.info("Default Volume:      %d%%", self.default_volume)
         logger.info("Dev Guild ID:        %s", self.guild_id or "Global Sync")
-        logger.info("==============================================================")
+        logger.info("=========================================================")

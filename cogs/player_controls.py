@@ -1,4 +1,4 @@
-"""VOIDKAGE MUSIC - Interactive Discord UI Components.
+"""Void Vibe — Interactive Discord UI Components.
 
 Provides real-time interactive buttons for Discord players with voice validation,
 moderator permission checks, and dynamic UI state synchronization.
@@ -15,7 +15,7 @@ import wavelink
 
 from services.queue_service import QueueService
 from utils.embeds import (
-    COLOR_VOIDKAGE_PRIMARY,
+    COLOR_VOID_VIBE_PRIMARY,
     error_embed,
     now_playing_embed,
     queue_embed,
@@ -26,11 +26,11 @@ from utils.validators import is_privileged_or_dj
 if TYPE_CHECKING:
     from discord.ext import commands
 
-logger = logging.getLogger("voidkage.player_controls")
+logger = logging.getLogger("voidvibe.player_controls")
 
 
-class VoidkageControlView(ui.View):
-    """Interactive Discord buttons attached to VOIDKAGE /nowplaying and playback embeds."""
+class VoidVibeControlView(ui.View):
+    """Interactive Discord buttons attached to Void Vibe /nowplaying and playback embeds."""
 
     def __init__(
         self,
@@ -263,3 +263,8 @@ class VoidkageControlView(ui.View):
                 await self.message.edit(view=self)
             except discord.HTTPException:
                 pass
+
+
+# Backwards compatibility alias
+VoidkageControlView = VoidVibeControlView
+

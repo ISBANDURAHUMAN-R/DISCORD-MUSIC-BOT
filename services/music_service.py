@@ -1,5 +1,7 @@
-"""VOIDKAGE MUSIC - Music Source Resolution Service.
+"""Void Vibe — Music Source Resolution Service.
 
+🎧 Your soundtrack, your server.
+Play music, manage queues, and enjoy your favorite tracks with Void Vibe.
 Abstracts audio provider searching, URL dispatching, playlist handling,
 and requester metadata injection.
 """
@@ -18,7 +20,7 @@ import wavelink
 if TYPE_CHECKING:
     from wavelink import Playable, Playlist
 
-logger = logging.getLogger("voidkage.music_service")
+logger = logging.getLogger("voidvibe.music_service")
 
 # Regex pattern for general web URLs
 URL_REGEX = re.compile(
@@ -51,9 +53,9 @@ class SearchResult:
 class MusicService:
     """Service for resolving music tracks from multiple providers."""
 
-    # Default search provider for text queries: TrackSource.SoundCloud or YouTubeMusic
-    # SoundCloud is natively enabled in Lavalink v4 without requiring YouTube oauth
-    DEFAULT_SOURCE = wavelink.TrackSource.SoundCloud
+    # Default search provider for text queries: YouTube (backed by dev.lavalink.youtube plugin)
+    DEFAULT_SOURCE = wavelink.TrackSource.YouTube
+    FALLBACK_SOURCE = wavelink.TrackSource.YouTubeMusic
 
     @classmethod
     def is_url(cls, query: str) -> bool:
@@ -99,7 +101,7 @@ class MusicService:
 
         Raises:
             NoTracksFoundError: If no tracks match.
-            SourceUnavailableError: If Lavalink or source fails.
+            SourceUnavailableError: If Lavalink or source fails, explaining the specific cause.
         """
         clean_query = query.strip()
         is_query_url = cls.is_url(clean_query)
@@ -110,41 +112,106 @@ class MusicService:
             "requester_avatar": requester.display_avatar.url if requester.display_avatar else None,
         }
 
-        try:
-            if is_query_url:
-                provider_name = cls.identify_url_provider(clean_query)
-                logger.debug("Resolving URL (%s): %s", provider_name, clean_query)
+        # ----------------------------------------------------------------------
+        # Case A: URL Resolution
+        # ----------------------------------------------------------------------
+        if is_query_url:
+            provider_name = cls.identify_url_provider(clean_query)
+            logger.info("Resolving %s URL: %s", provider_name, clean_query)
+            try:
                 tracks: Union[List[Playable], Playlist] = await wavelink.Playable.search(clean_query)
                 source_desc = f"{provider_name} URL"
-            else:
-                source = preferred_source or cls.DEFAULT_SOURCE
-                source_name = getattr(source, "name", str(source))
-                logger.debug("Searching via %s: %s", source_name, clean_query)
-                tracks = await wavelink.Playable.search(clean_query, source=source)
+            except wavelink.LavalinkLoadException as exc:
+                logger.error("Lavalink failed to load %s URL '%s': %s", provider_name, clean_query, exc)
+                if provider_name == "Spotify":
+                    raise SourceUnavailableError(
+                        "**Spotify resolution failed.**\n"
+                        "Spotify link resolution requires configured API credentials "
+                        "(`SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`) in `.env` and `application.yml`.\n\n"
+                        "💡 **Tip:** You can play this song immediately by searching its title: `/play <song title or artist>`"
+                    ) from exc
+                elif provider_name == "Apple Music":
+                    raise SourceUnavailableError(
+                        "**Apple Music resolution failed.**\n"
+                        "Apple Music is currently disabled and requires an Apple Developer Media API token.\n\n"
+                        "💡 **Tip:** You can play this song immediately by searching its title: `/play <song title or artist>`"
+                    ) from exc
+                elif provider_name == "SoundCloud":
+                    raise SourceUnavailableError(
+                        "**SoundCloud resolution failed.**\n"
+                        "SoundCloud did not return any supported audio formats for this track. "
+                        "The stream may be geo-restricted, private, or SoundCloud format layouts may have changed.\n\n"
+                        "💡 **Tip:** Try searching for the song title directly: `/play <song title>`"
+                    ) from exc
+                elif provider_name == "YouTube":
+                    raise SourceUnavailableError(
+                        "**YouTube resolution failed.**\n"
+                        "The video or playlist may be private, age-restricted, region-blocked, or unavailable."
+                    ) from exc
+                else:
+                    raise SourceUnavailableError(
+                        f"**{provider_name} resolution failed.**\n"
+                        f"Unable to load audio stream from this link ({exc})."
+                    ) from exc
+            except Exception as exc:
+                logger.error("Unexpected error loading URL '%s': %s", clean_query, exc, exc_info=True)
+                raise SourceUnavailableError(
+                    f"**Failed to resolve {provider_name} link.** An unexpected communication error occurred: {exc}"
+                ) from exc
+
+        # ----------------------------------------------------------------------
+        # Case B: Text Keyword Search
+        # ----------------------------------------------------------------------
+        else:
+            primary_source = preferred_source or cls.DEFAULT_SOURCE
+            source_name = getattr(primary_source, "name", str(primary_source))
+            logger.info("Searching via %s: '%s'", source_name, clean_query)
+
+            tracks = None
+            primary_error: Optional[Exception] = None
+
+            try:
+                tracks = await wavelink.Playable.search(clean_query, source=primary_source)
                 source_desc = f"{source_name} Search"
+            except wavelink.LavalinkLoadException as exc:
+                primary_error = exc
+                logger.warning("Primary search via %s failed for '%s': %s", source_name, clean_query, exc)
+            except Exception as exc:
+                primary_error = exc
+                logger.warning("Primary search via %s encountered unexpected error for '%s': %s", source_name, clean_query, exc)
 
-        except wavelink.LavalinkLoadException as exc:
-            provider_hint = cls.identify_url_provider(clean_query) if is_query_url else "configured source"
-            logger.error("Lavalink failed to load query '%s': %s", clean_query, exc)
-            raise SourceUnavailableError(
-                f"The audio provider ({provider_hint}) was unable to load this track. "
-                "The track may be region-restricted, private, or requires authentication."
-            ) from exc
+            # Automatic Fallback: If primary search failed or returned 0 tracks, and preferred_source was not explicitly overridden
+            if (not tracks or primary_error) and not preferred_source and primary_source != cls.FALLBACK_SOURCE:
+                fallback_name = getattr(cls.FALLBACK_SOURCE, "name", str(cls.FALLBACK_SOURCE))
+                logger.info("Attempting automatic fallback search via %s for: '%s'", fallback_name, clean_query)
+                try:
+                    tracks = await wavelink.Playable.search(clean_query, source=cls.FALLBACK_SOURCE)
+                    if tracks:
+                        source_desc = f"{fallback_name} Search"
+                        primary_error = None  # Cleared by successful fallback
+                except Exception as fb_exc:
+                    logger.error("Fallback search via %s also failed for '%s': %s", fallback_name, clean_query, fb_exc)
 
-        except Exception as exc:
-            logger.error("Unexpected error searching for '%s': %s", clean_query, exc, exc_info=True)
-            raise SourceUnavailableError(
-                "An unexpected error occurred while communicating with the music audio node. "
-                "Please verify Lavalink status or try a different search query."
-            ) from exc
+            if not tracks:
+                if primary_error:
+                    err_text = str(primary_error)
+                    if "Did not detect any supported formats" in err_text:
+                        fail_reason = f"**{source_name} Search Failed:** SoundCloud did not detect any supported audio formats."
+                    else:
+                        fail_reason = f"**{source_name} Search Failed:** {err_text}"
+                    raise SourceUnavailableError(
+                        f"{fail_reason}\n\n"
+                        "💡 **Tip:** Try using different keywords, adding the artist name, or providing a direct YouTube URL."
+                    ) from primary_error
 
-        if not tracks:
-            raise NoTracksFoundError(
-                f"No playable tracks were found matching: `{clean_query}`.\n"
-                "Tip: Try using specific keywords (e.g. `Song Title Artist`) or a direct SoundCloud/YouTube URL."
-            )
+                raise NoTracksFoundError(
+                    f"No playable tracks were found matching: `{clean_query}`.\n\n"
+                    "💡 **Tip:** Try using specific keywords (e.g. `Song Title Artist`) or a direct YouTube URL."
+                )
 
-        # Handle Playlist
+        # ----------------------------------------------------------------------
+        # Process Results (Playlist vs Single Track)
+        # ----------------------------------------------------------------------
         if isinstance(tracks, wavelink.Playlist):
             tracks.extras = user_extras
             playlist_tracks = list(tracks.tracks)
@@ -157,7 +224,6 @@ class MusicService:
                 source_description=f"Playlist ({len(playlist_tracks)} tracks)",
             )
 
-        # Handle single track or list of search results
         playable_list: List[Playable] = list(tracks)
         for trk in playable_list:
             trk.extras = user_extras

@@ -1,5 +1,7 @@
-"""VOIDKAGE MUSIC — High-Performance Discord Music Bot.
+"""Void Vibe — Discord Music Bot.
 
+🎧 Your soundtrack, your server.
+Play music, manage queues, and enjoy your favorite tracks with Void Vibe.
 Built with Python 3.12+, discord.py 2.x, Wavelink 3.5, and Lavalink v4.
 """
 
@@ -18,8 +20,8 @@ import wavelink
 from config import Config, ConfigurationError
 
 
-class VoidkageBot(commands.Bot):
-    """Core Discord bot application for VOIDKAGE MUSIC."""
+class VoidVibeBot(commands.Bot):
+    """Core Discord bot application for Void Vibe."""
 
     def __init__(self, config: Config) -> None:
         self.config = config
@@ -48,7 +50,7 @@ class VoidkageBot(commands.Bot):
         # 2. Connect to Wavelink / Lavalink node pool
         logging.info("Connecting to Lavalink node at %s...", self.config.lavalink_uri)
         node = wavelink.Node(
-            identifier="Voidkage-Node-1",
+            identifier="VoidVibe-Node-1",
             uri=self.config.lavalink_uri,
             password=self.config.lavalink_password,
             inactive_player_timeout=self.config.inactivity_timeout,
@@ -81,24 +83,25 @@ class VoidkageBot(commands.Bot):
 
     async def on_ready(self) -> None:
         """Invoked when the bot has finished internal caching and is ready."""
-        user_name = self.user.name if self.user else "VOIDKAGE"
+        user_name = self.user.name if self.user else "Void Vibe"
         user_id = self.user.id if self.user else 0
         guild_count = len(self.guilds)
 
         logging.info("==============================================================")
-        logging.info("🌌 %s is ONLINE and ready for commands! (ID: %s)", user_name, user_id)
+        logging.info("🎧 %s is ONLINE and ready for commands! (ID: %s)", user_name, user_id)
+        logging.info("Tagline: 🎧 Your soundtrack, your server.")
         logging.info("Connected to %d Discord server(s).", guild_count)
         logging.info("==============================================================")
 
         activity = discord.Activity(
             type=discord.ActivityType.listening,
-            name="/play | VOIDKAGE",
+            name="/play | Void Vibe",
         )
         await self.change_presence(status=discord.Status.online, activity=activity)
 
     async def close(self) -> None:
         """Clean shutdown handler."""
-        logging.info("Shutting down VOIDKAGE MUSIC bot. Cleaning up active players...")
+        logging.info("Shutting down Void Vibe bot. Cleaning up active players...")
 
         # Disconnect all active guild voice players
         for guild in self.guilds:
@@ -116,11 +119,21 @@ class VoidkageBot(commands.Bot):
             pass
 
         await super().close()
-        logging.info("VOIDKAGE MUSIC shutdown complete.")
+        logging.info("Void Vibe shutdown complete.")
+
+
+# Backwards compatibility alias
+VoidkageBot = VoidVibeBot
 
 
 def setup_logging(log_level: str) -> logging.Logger:
-    """Configure structured console logging."""
+    """Configure structured console logging with safe UTF-8 output."""
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+
     numeric_level = getattr(logging, log_level, logging.INFO)
 
     log_format = logging.Formatter(
@@ -156,7 +169,7 @@ def main() -> None:
     logger = setup_logging(config.log_level)
     config.print_diagnostics(logger)
 
-    bot = VoidkageBot(config)
+    bot = VoidVibeBot(config)
 
     try:
         bot.run(config.discord_token, log_handler=None)

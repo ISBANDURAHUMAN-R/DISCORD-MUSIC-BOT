@@ -1,1 +1,2 @@
-"""Discord Cogs package for VOIDKAGE MUSIC."""
+"""Discord Cogs package for Void Vibe."""
+

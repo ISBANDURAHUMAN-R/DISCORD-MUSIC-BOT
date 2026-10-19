@@ -1,1 +1,2 @@
-"""Utilities package for VOIDKAGE MUSIC."""
+"""Utilities package for Void Vibe."""
+

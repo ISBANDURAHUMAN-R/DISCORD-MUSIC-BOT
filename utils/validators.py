@@ -1,4 +1,4 @@
-"""VOIDKAGE MUSIC - Validation Utilities.
+"""Void Vibe — Validation Utilities.
 
 Validates voice channel states, permissions, inputs (volume, queue positions),
 and moderation privileges.

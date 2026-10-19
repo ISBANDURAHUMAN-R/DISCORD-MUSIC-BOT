@@ -1,1 +1,2 @@
-"""Automated tests package for VOIDKAGE MUSIC."""
+"""Automated tests package for Void Vibe."""
+

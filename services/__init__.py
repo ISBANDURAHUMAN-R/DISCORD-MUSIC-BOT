@@ -1,1 +1,2 @@
-"""Services package for VOIDKAGE MUSIC."""
+"""Services package for Void Vibe."""
+

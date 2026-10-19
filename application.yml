@@ -7,8 +7,8 @@ server:
 lavalink:
   plugins:
     # YouTube plugin for Lavalink v4 (dev.lavalink.youtube)
-    - dependency: "dev.lavalink.youtube:youtube-plugin:1.11.4"
-      repository: "https://maven.lavalink.dev/releases"
+    - dependency: "dev.lavalink.youtube:youtube-plugin:2be8e542d3f6f178e048dca565892684c2e40177"
+      repository: "https://maven.lavalink.dev/snapshots"
     # LavaSrc plugin for Spotify / Apple Music / Deezer metadata matching
     - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.3.0"
       repository: "https://maven.lavalink.dev/releases"
@@ -51,12 +51,20 @@ plugins:
     allowSearch: true
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
-    # Clients to use for playback: MUSIC, WEB, ANDROID, TVHTML5EMBEDDED
+    oauth:
+      enabled: true
+      refreshToken: "${YOUTUBE_OAUTH_REFRESH_TOKEN:}"
+      skipInitialization: true
+    # Clients to use for playback and search: TV (OAuth authenticated), WEB, MUSIC, ANDROID_VR, TVHTML5_SIMPLY
     clients:
+      - TV
+      - ANDROID_VR
       - MUSIC
+      - ANDROID_MUSIC
       - WEB
-      - ANDROID
-      - TVHTML5EMBEDDED
+      - TVHTML5_SIMPLY
+      - MWEB
+      - WEBEMBEDDED
 
   lavasrc:
     providers:
@@ -65,18 +73,18 @@ plugins:
       - "scsearch:%QUERY%"
     sources:
       spotify: true
-      applemusic: true
+      applemusic: false # Disabled: requires valid Apple Music developer mediaAPIToken
       deezer: false
       yandexmusic: false
     spotify:
-      clientId: "" # Optional: Add Spotify Client ID for LavaSrc native resolution
-      clientSecret: "" # Optional: Add Spotify Client Secret
+      clientId: "${SPOTIFY_CLIENT_ID:}" # Optional: Add Spotify Client ID for LavaSrc native resolution
+      clientSecret: "${SPOTIFY_CLIENT_SECRET:}" # Optional: Add Spotify Client Secret
       countryCode: "US"
       playlistLoadLimit: 6
       albumLoadLimit: 6
     applemusic:
       countryCode: "US"
-      mediaAPIToken: "" # Optional: Add Apple Music token if using direct API
+      mediaAPIToken: "${APPLE_MUSIC_MEDIA_API_TOKEN:}" # Required if applemusic source is enabled above
 
 metrics:
   prometheus:

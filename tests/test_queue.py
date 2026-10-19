@@ -1,4 +1,5 @@
-"""Unit tests for VOIDKAGE MUSIC QueueService, looping modes, and UI formatters."""
+"""Unit tests for Void Vibe QueueService, looping modes, and UI formatters."""
+
 
 from unittest.mock import MagicMock
 import pytest

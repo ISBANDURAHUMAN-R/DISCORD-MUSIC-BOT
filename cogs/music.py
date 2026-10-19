@@ -1,5 +1,7 @@
-"""VOIDKAGE MUSIC - Core Slash Commands and Audio Lifecycle Cog.
+"""Void Vibe — Core Slash Commands and Audio Lifecycle Cog.
 
+🎧 Your soundtrack, your server.
+Play music, manage queues, and enjoy your favorite tracks with Void Vibe.
 Implements all music commands (/play, /pause, /resume, /skip, /stop, /queue,
 /nowplaying, /volume, /clear, /remove, /shuffle, /loop, /join, /leave)
 and handles Lavalink node and playback lifecycle events.
@@ -15,7 +17,7 @@ from discord import app_commands
 from discord.ext import commands
 import wavelink
 
-from cogs.player_controls import VoidkageControlView
+from cogs.player_controls import VoidVibeControlView, VoidkageControlView
 from services.music_service import (
     MusicService,
     MusicServiceError,
@@ -45,15 +47,15 @@ from utils.validators import (
 )
 
 if TYPE_CHECKING:
-    from bot import VoidkageBot
+    from bot import VoidVibeBot, VoidkageBot
 
-logger = logging.getLogger("voidkage.music_cog")
+logger = logging.getLogger("voidvibe.music_cog")
 
 
 class MusicCog(commands.Cog, name="Music"):
     """Core music playback and queue management commands."""
 
-    def __init__(self, bot: VoidkageBot) -> None:
+    def __init__(self, bot: VoidVibeBot) -> None:
         self.bot = bot
 
     # ==========================================================================
@@ -91,7 +93,7 @@ class MusicCog(commands.Cog, name="Music"):
         if home_channel and getattr(player, "_auto_advanced", False):
             player._auto_advanced = False  # Reset flag
             try:
-                view = VoidkageControlView(player, self.bot)
+                view = VoidVibeControlView(player, self.bot)
                 embed = now_playing_embed(player, track)
                 view.message = await home_channel.send(embed=embed, view=view)
             except (discord.HTTPException, discord.Forbidden):
@@ -123,17 +125,24 @@ class MusicCog(commands.Cog, name="Music"):
         player = payload.player
         track = payload.track
         exc = payload.exception
+        source_name = getattr(track, "source", None) or "Unknown Source"
+        reason = exc.get("message") if isinstance(exc, dict) else getattr(exc, "message", str(exc))
         logger.error(
-            "[Guild %s] Track Exception on '%s': %s",
+            "[Guild %s] Track Exception on '%s' (Source: %s): %s",
             player.guild.id if player and player.guild else "Unknown",
             track.title,
+            source_name,
             exc,
         )
 
         home_channel: Optional[discord.TextChannel] = getattr(player, "home_channel", None)
         if home_channel:
             try:
-                msg = f"Playback failed for **{track.title}**. Attempting next track..."
+                msg = (
+                    f"Playback failed for **{track.title}** from source `{source_name}`.\n"
+                    f"**Reason:** {reason}\n"
+                    "Attempting next track in queue..."
+                )
                 await home_channel.send(embed=warning_embed("Track Playback Error", msg))
             except discord.HTTPException:
                 pass
@@ -246,7 +255,15 @@ class MusicCog(commands.Cog, name="Music"):
             if not player.playing and not player.paused:
                 # Play first track immediately
                 first_track = tracks[0]
-                await player.play(first_track)
+                try:
+                    await player.play(first_track)
+                except Exception as exc:
+                    source_name = getattr(first_track, "source", None) or "Unknown Source"
+                    logger.error("Failed to start playback for '%s' from %s: %s", first_track.title, source_name, exc)
+                    raise SourceUnavailableError(
+                        f"Failed to start playback for **{first_track.title}** from source `{source_name}`.\n"
+                        f"**Error Details:** {exc}"
+                    ) from exc
 
                 # Enqueue the remaining tracks
                 for track in tracks[1:]:
@@ -269,8 +286,17 @@ class MusicCog(commands.Cog, name="Music"):
         track = search_result.tracks[0]
 
         if not player.playing and not player.paused:
-            await player.play(track)
-            view = VoidkageControlView(player, self.bot)
+            try:
+                await player.play(track)
+            except Exception as exc:
+                source_name = getattr(track, "source", None) or "Unknown Source"
+                logger.error("Failed to start playback for '%s' from %s: %s", track.title, source_name, exc)
+                raise SourceUnavailableError(
+                    f"Failed to start playback for **{track.title}** from source `{source_name}`.\n"
+                    f"**Error Details:** {exc}"
+                ) from exc
+
+            view = VoidVibeControlView(player, self.bot)
             embed = now_playing_embed(player, track)
             msg = await interaction.followup.send(embed=embed, view=view)
             view.message = msg
@@ -372,7 +398,7 @@ class MusicCog(commands.Cog, name="Music"):
         """Display real-time now playing embed with interactive buttons."""
         player: wavelink.Player = ensure_player_playing(interaction.guild.voice_client)  # type: ignore
 
-        view = VoidkageControlView(player, self.bot)
+        view = VoidVibeControlView(player, self.bot)
         embed = now_playing_embed(player, player.current)
         msg = await interaction.response.send_message(embed=embed, view=view)
         # Note: on slash command send_message, fetch message if view needs reference
@@ -484,7 +510,7 @@ class MusicCog(commands.Cog, name="Music"):
         setattr(player, "home_channel", interaction.channel)
 
         await interaction.response.send_message(
-            embed=success_embed("Connected", f"Joined {voice_channel.mention} and ready for music! 🌌")
+            embed=success_embed("Connected", f"Joined {voice_channel.mention} and ready for music! 🎧")
         )
 
     @app_commands.command(name="leave", description="Disconnect from the voice channel and clean up.")
@@ -568,6 +594,7 @@ class MusicCog(commands.Cog, name="Music"):
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-async def setup(bot: VoidkageBot) -> None:
+async def setup(bot: commands.Bot) -> None:
     """Extension entry point for loading the Music cog."""
     await bot.add_cog(MusicCog(bot))
+

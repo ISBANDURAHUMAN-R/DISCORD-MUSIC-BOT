@@ -1,4 +1,4 @@
-"""VOIDKAGE MUSIC - Queue Management Service.
+"""Void Vibe — Queue Management Service.
 
 Provides thread/async-safe queue operations, loop transitions, track removal,
 shuffling, and pagination helpers over Wavelink's Queue.
@@ -26,7 +26,7 @@ class LoopMode(enum.Enum):
 
 
 class QueueService:
-    """Encapsulates queue mutations and querying for VOIDKAGE music players."""
+    """Encapsulates queue mutations and querying for Void Vibe music players."""
 
     @staticmethod
     def set_loop_mode(player: Player, mode: str | LoopMode) -> Tuple[wavelink.QueueMode, str]:

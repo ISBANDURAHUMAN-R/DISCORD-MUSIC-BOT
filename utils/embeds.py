@@ -1,6 +1,8 @@
-"""VOIDKAGE MUSIC - Discord Embed Presentation Layer.
+"""Void Vibe — Discord Embed Presentation Layer.
 
-Implements the sleek, dark obsidian and neon purple VOIDKAGE theme,
+🎧 Your soundtrack, your server.
+Play music, manage queues, and enjoy your favorite tracks with Void Vibe.
+Implements the sleek, dark obsidian and neon purple Void Vibe theme,
 dynamic progress bars, source badges, and standardized feedback embeds.
 """
 
@@ -10,22 +12,30 @@ import datetime
 from typing import TYPE_CHECKING, Optional, Union
 
 import discord
-
-if TYPE_CHECKING:
-    import wavelink
+import wavelink
 
 # ==============================================================================
-# VOIDKAGE COLOR PALETTE
+# VOID VIBE COLOR PALETTE (Dark Obsidian & Deep Neon Purple)
 # ==============================================================================
-COLOR_VOIDKAGE_PRIMARY = 0x8B5CF6  # Neon Void Purple
-COLOR_VOIDKAGE_DARK = 0x4C1D95     # Deep Obsidian Purple
-COLOR_VOIDKAGE_SUCCESS = 0x10B981  # Emerald Accent
-COLOR_VOIDKAGE_ERROR = 0xEF4444    # Crimson Accent
-COLOR_VOIDKAGE_WARNING = 0xF59E0B  # Amber Accent
-COLOR_VOIDKAGE_INFO = 0x3B82F6     # Sapphire Accent
+COLOR_VOID_VIBE_PRIMARY = 0x7B2CBF  # Deep Neon Purple
+COLOR_VOID_VIBE_DARK = 0x1A0B2E     # Deep Obsidian Black/Purple
+COLOR_VOID_VIBE_SUCCESS = 0x10B981  # Emerald Accent
+COLOR_VOID_VIBE_ERROR = 0xEF4444    # Crimson Accent
+COLOR_VOID_VIBE_WARNING = 0xF59E0B  # Amber Accent
+COLOR_VOID_VIBE_INFO = 0x3B82F6     # Sapphire Accent
 
-VOIDKAGE_FOOTER_ICON = "https://cdn.discordapp.com/emojis/1045236873837920316.webp"
+# Backwards compatibility color aliases
+COLOR_VOIDKAGE_PRIMARY = COLOR_VOID_VIBE_PRIMARY
+COLOR_VOIDKAGE_DARK = COLOR_VOID_VIBE_DARK
+COLOR_VOIDKAGE_SUCCESS = COLOR_VOID_VIBE_SUCCESS
+COLOR_VOIDKAGE_ERROR = COLOR_VOID_VIBE_ERROR
+COLOR_VOIDKAGE_WARNING = COLOR_VOID_VIBE_WARNING
+COLOR_VOIDKAGE_INFO = COLOR_VOID_VIBE_INFO
+
+VOID_VIBE_FOOTER_ICON = None  # None prevents Discord from displaying a broken/expired image icon
+VOIDKAGE_FOOTER_ICON = None
 DEFAULT_THUMBNAIL = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80"
+VOID_VIBE_TAGLINE = "🎧 Your soundtrack, your server."
 
 
 def format_duration(ms: int) -> str:
@@ -99,10 +109,10 @@ def get_requester_mention(track: wavelink.Playable) -> str:
 
 
 def now_playing_embed(player: wavelink.Player, track: wavelink.Playable) -> discord.Embed:
-    """Construct the VOIDKAGE now playing display embed."""
+    """Construct the Void Vibe now playing display embed."""
     embed = discord.Embed(
-        title="🌌 VOIDKAGE MUSIC — NOW PLAYING",
-        color=COLOR_VOIDKAGE_PRIMARY,
+        title="🎧 VOID VIBE — NOW PLAYING",
+        color=COLOR_VOID_VIBE_PRIMARY,
         timestamp=datetime.datetime.now(datetime.timezone.utc),
     )
 
@@ -157,7 +167,7 @@ def now_playing_embed(player: wavelink.Player, track: wavelink.Playable) -> disc
     if artwork:
         embed.set_thumbnail(url=artwork)
 
-    embed.set_footer(text="VOIDKAGE Music System • Lavalink v4", icon_url=VOIDKAGE_FOOTER_ICON)
+    embed.set_footer(text=f"Void Vibe • {VOID_VIBE_TAGLINE}", icon_url=VOID_VIBE_FOOTER_ICON)
     return embed
 
 
@@ -168,7 +178,7 @@ def track_queued_embed(
     embed = discord.Embed(
         title="📥 Added to Queue",
         description=f"**[{track.title}]({track.uri or 'https://discord.com'})**",
-        color=COLOR_VOIDKAGE_PRIMARY,
+        color=COLOR_VOID_VIBE_PRIMARY,
         timestamp=datetime.datetime.now(datetime.timezone.utc),
     )
 
@@ -187,7 +197,7 @@ def track_queued_embed(
     if track.artwork:
         embed.set_thumbnail(url=track.artwork)
 
-    embed.set_footer(text="VOIDKAGE Music System", icon_url=VOIDKAGE_FOOTER_ICON)
+    embed.set_footer(text=f"Void Vibe • {VOID_VIBE_TAGLINE}", icon_url=VOID_VIBE_FOOTER_ICON)
     return embed
 
 
@@ -198,7 +208,7 @@ def playlist_queued_embed(
     embed = discord.Embed(
         title="📚 Enqueued Playlist",
         description=f"### **{name}**",
-        color=COLOR_VOIDKAGE_PRIMARY,
+        color=COLOR_VOID_VIBE_PRIMARY,
         timestamp=datetime.datetime.now(datetime.timezone.utc),
     )
 
@@ -209,7 +219,7 @@ def playlist_queued_embed(
     if artwork:
         embed.set_thumbnail(url=artwork)
 
-    embed.set_footer(text="VOIDKAGE Music System", icon_url=VOIDKAGE_FOOTER_ICON)
+    embed.set_footer(text=f"Void Vibe • {VOID_VIBE_TAGLINE}", icon_url=VOID_VIBE_FOOTER_ICON)
     return embed
 
 
@@ -220,8 +230,8 @@ def queue_embed(player: wavelink.Player, page: int = 1, per_page: int = 10) -> d
     page = max(min(page, total_pages), 1)
 
     embed = discord.Embed(
-        title="📜 VOIDKAGE MUSIC — SERVER QUEUE",
-        color=COLOR_VOIDKAGE_PRIMARY,
+        title="🎵 VOID VIBE — MUSIC QUEUE",
+        color=COLOR_VOID_VIBE_PRIMARY,
         timestamp=datetime.datetime.now(datetime.timezone.utc),
     )
 
@@ -233,10 +243,10 @@ def queue_embed(player: wavelink.Player, page: int = 1, per_page: int = 10) -> d
             f"**Now Playing:**\n"
             f"▶ [{current.title}]({current.uri or 'https://discord.com'}) "
             f"(`{cur_duration}`) — {get_requester_mention(current)}\n\n"
-            f"**Upcoming Tracks ({total_tracks}):**\n"
+            f"**Up Next ({total_tracks}):**\n"
         )
     else:
-        embed.description = "**Nothing currently playing.**\n\n**Upcoming Tracks:**\n"
+        embed.description = "**Nothing currently playing.**\n\n**Up Next:**\n"
 
     if total_tracks == 0:
         embed.description += "*The queue is currently empty. Add tracks with `/play <query>`!*"
@@ -276,8 +286,8 @@ def queue_embed(player: wavelink.Player, page: int = 1, per_page: int = 10) -> d
     )
 
     embed.set_footer(
-        text=f"Page {page} of {total_pages} • VOIDKAGE Music System",
-        icon_url=VOIDKAGE_FOOTER_ICON,
+        text=f"Page {page} of {total_pages} • Void Vibe",
+        icon_url=VOID_VIBE_FOOTER_ICON,
     )
     return embed
 
@@ -287,9 +297,9 @@ def success_embed(title: str, description: str) -> discord.Embed:
     return discord.Embed(
         title=f"✅ {title}",
         description=description,
-        color=COLOR_VOIDKAGE_SUCCESS,
+        color=COLOR_VOID_VIBE_SUCCESS,
         timestamp=datetime.datetime.now(datetime.timezone.utc),
-    ).set_footer(text="VOIDKAGE Music System", icon_url=VOIDKAGE_FOOTER_ICON)
+    ).set_footer(text=f"Void Vibe • {VOID_VIBE_TAGLINE}", icon_url=VOID_VIBE_FOOTER_ICON)
 
 
 def error_embed(title: str, description: str) -> discord.Embed:
@@ -297,9 +307,9 @@ def error_embed(title: str, description: str) -> discord.Embed:
     return discord.Embed(
         title=f"❌ {title}",
         description=description,
-        color=COLOR_VOIDKAGE_ERROR,
+        color=COLOR_VOID_VIBE_ERROR,
         timestamp=datetime.datetime.now(datetime.timezone.utc),
-    ).set_footer(text="VOIDKAGE Music System", icon_url=VOIDKAGE_FOOTER_ICON)
+    ).set_footer(text=f"Void Vibe • {VOID_VIBE_TAGLINE}", icon_url=VOID_VIBE_FOOTER_ICON)
 
 
 def warning_embed(title: str, description: str) -> discord.Embed:
@@ -307,9 +317,9 @@ def warning_embed(title: str, description: str) -> discord.Embed:
     return discord.Embed(
         title=f"⚠️ {title}",
         description=description,
-        color=COLOR_VOIDKAGE_WARNING,
+        color=COLOR_VOID_VIBE_WARNING,
         timestamp=datetime.datetime.now(datetime.timezone.utc),
-    ).set_footer(text="VOIDKAGE Music System", icon_url=VOIDKAGE_FOOTER_ICON)
+    ).set_footer(text=f"Void Vibe • {VOID_VIBE_TAGLINE}", icon_url=VOID_VIBE_FOOTER_ICON)
 
 
 def info_embed(title: str, description: str) -> discord.Embed:
@@ -317,6 +327,7 @@ def info_embed(title: str, description: str) -> discord.Embed:
     return discord.Embed(
         title=f"ℹ️ {title}",
         description=description,
-        color=COLOR_VOIDKAGE_INFO,
+        color=COLOR_VOID_VIBE_INFO,
         timestamp=datetime.datetime.now(datetime.timezone.utc),
-    ).set_footer(text="VOIDKAGE Music System", icon_url=VOIDKAGE_FOOTER_ICON)
+    ).set_footer(text=f"Void Vibe • {VOID_VIBE_TAGLINE}", icon_url=VOID_VIBE_FOOTER_ICON)
+

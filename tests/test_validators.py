@@ -1,4 +1,5 @@
-"""Unit tests for VOIDKAGE MUSIC validators."""
+"""Unit tests for Void Vibe validators."""
+
 
 from unittest.mock import MagicMock
 import discord
