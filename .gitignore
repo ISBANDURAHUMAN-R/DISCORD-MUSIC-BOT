@@ -1,0 +1,44 @@
+# Environment and credentials
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache & compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Logs & Lavalink runtime artifacts
+logs/
+*.log
+Lavalink.jar
+plugins/
+application-local.yml
+
+# IDE & Editor folders
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini

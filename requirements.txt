@@ -1,0 +1,9 @@
+# VOIDKAGE MUSIC Bot - Pinned Requirements
+# Compatible with Python 3.12+ and Lavalink v4.x
+
+discord.py==2.7.1
+wavelink==3.5.2
+python-dotenv==1.2.4
+PyYAML==6.0.3
+pytest==9.1.1
+pytest-asyncio==1.4.0
