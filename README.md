@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.png" alt="DISCORD-MUSIC-BOT Banner" width="100%">
+</p>
+
 # 🎧 Void Vibe — Discord Music Bot
 
 > **🎧 Your soundtrack, your server.**  
