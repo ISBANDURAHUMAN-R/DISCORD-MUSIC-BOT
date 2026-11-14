@@ -8,12 +8,12 @@
 Void Vibe is an audio streaming Discord bot built with Python, discord.py, and Lavalink v4. It provides independent per-server audio playback queues, interactive Discord button controls, and multi-source audio resolution across Discord voice channels. The bot features automated voice state cleanup, disconnect timers, and credential masking.
 
 ## ❖ Key Features
-- ▪ Lavalink v4 architecture powered by Wavelink 3.5 with WebSocket audio encoding.
-- ▫ 14 native Discord application slash commands with parameter auto-completion and validation.
-- ▴ Interactive Discord UI button controls attached directly to player embeds.
-- ▿ Isolated per-guild queuing supporting single-track and whole-queue loop modes.
-- ⬡ Automated voice channel departure on inactivity or listener abandonment.
-- · Automated unit test suite covering queue pagination, loop math, and provider fallback logic.
+- Lavalink v4 architecture powered by Wavelink 3.5 with WebSocket audio encoding.
+- 14 native Discord application slash commands with parameter auto-completion and validation.
+- Interactive Discord UI button controls attached directly to player embeds.
+- Isolated per-guild queuing supporting single-track and whole-queue loop modes.
+- Automated voice channel departure on inactivity or listener abandonment.
+- Automated unit test suite covering queue pagination, loop math, and provider fallback logic.
 
 ## ⬢ Technologies Used
 - Python 3.12+
