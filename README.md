@@ -2,16 +2,16 @@
   <img src="assets/banner.png" alt="DISCORD-MUSIC-BOT Banner" width="100%">
 </p>
 
-# 🎧 Void Vibe — Discord Music Bot
+# ◈ Void Vibe — Discord Music Bot
 
-> **🎧 Your soundtrack, your server.**  
+> **Your soundtrack, your server.**  
 > *Play music, manage queues, and enjoy your favorite tracks with Void Vibe.*
 
 Void Vibe is a modern, high-performance, real-time audio streaming Discord bot built using **Python 3.12+**, **discord.py 2.x**, **Wavelink 3.5**, and **Lavalink v4**. Designed with an obsidian black and deep neon purple aesthetic, Void Vibe delivers independent per-server queues, interactive Discord UI button controls, multi-provider audio resolution, and enterprise-grade voice validation.
 
 ---
 
-## ⚡ Key Highlights & Features
+## ✦ Key Highlights & Features
 
 - **True Lavalink v4 Architecture**: Powered by Wavelink 3.5, connecting via WebSocket to Lavalink v4 audio nodes with low latency and high-throughput audio encoding.
 - **Native Slash Commands**: 14 100% native Discord application slash commands with type hinting, auto-complete choices, and parameter validation.
@@ -24,7 +24,7 @@ Void Vibe is a modern, high-performance, real-time audio streaming Discord bot b
 
 ---
 
-## 🗂️ Project Structure
+## □ Project Structure
 
 ```
 Void Vibe/
@@ -57,7 +57,7 @@ Void Vibe/
 
 ---
 
-## 📜 Supported Slash Commands
+## § Supported Slash Commands
 
 | Command | Description | Parameters |
 | :--- | :--- | :--- |
@@ -78,7 +78,7 @@ Void Vibe/
 
 ---
 
-## 💻 Windows 10 & 11 Local Development Workflow
+## ▸ Windows 10 & 11 Local Development Workflow
 
 Follow these steps to set up and run Void Vibe locally on Windows using PowerShell or Command Prompt.
 
@@ -137,8 +137,8 @@ You will see the startup banner:
 [INFO] Connecting to Lavalink node at http://127.0.0.1:2333...
 [INFO] Synchronized 14 global slash commands with Discord.
 [INFO] Lavalink Node 'VoidVibe-Node-1' is READY.
-[INFO] 🎧 Void Vibe is ONLINE and ready for commands!
-[INFO] Tagline: 🎧 Your soundtrack, your server.
+[INFO] Void Vibe is ONLINE and ready for commands!
+[INFO] Tagline: Your soundtrack, your server.
 ```
 
 > [!NOTE]
@@ -146,7 +146,7 @@ You will see the startup banner:
 
 ---
 
-## 🤖 Discord Developer Portal Setup
+## ⬡ Discord Developer Portal Setup
 
 Follow these exact steps to register and invite Void Vibe:
 
@@ -154,7 +154,7 @@ Follow these exact steps to register and invite Void Vibe:
 2. Select your application or click **New Application** and name it **Void Vibe**.
 3. Under **General Information**:
    - Set Description: `Play music, manage queues, and enjoy your favorite tracks with Void Vibe.`
-   - Set Tagline in About Me: `🎧 Your soundtrack, your server.`
+   - Set Tagline in About Me: `Your soundtrack, your server.`
 4. In the left sidebar, navigate to **Bot**:
    - Set Bot Username to `Void Vibe`.
    - Click **Reset Token**, copy your new token, and place it in `.env` under `DISCORD_TOKEN`.
@@ -174,7 +174,7 @@ Follow these exact steps to register and invite Void Vibe:
 
 ---
 
-## 🔧 Lavalink v4 & Plugin Configuration
+## ⬢ Lavalink v4 & Plugin Configuration
 
 Lavalink v4 utilizes external plugins for advanced sources. The project is configured with:
 
@@ -197,22 +197,22 @@ Lavalink v4 utilizes external plugins for advanced sources. The project is confi
 
 ---
 
-## 🎵 Music Source Limitations & Link Handling
+## ❖ Music Source Limitations & Link Handling
 
 | Source | Status | How It Works |
 | :--- | :--- | :--- |
-| **YouTube** | 🟢 Default Search & Streams | Handled by `youtube-plugin` with OAuth support. Primary default search (`/play <title>`) and direct video/playlist links. |
-| **YouTube Music** | 🟢 Automated Fallback | Handled by `youtube-plugin`. Automatic search fallback (`ytmsearch:`) if primary search fails. |
-| **Bandcamp** | 🟢 Native Stream | Direct audio stream extraction without API keys. |
-| **Twitch** | 🟢 Native Stream | Live audio streams supported directly. |
-| **Direct URL** | 🟢 Native Stream | Direct MP3, AAC, FLAC, or OGG HTTP/HTTPS audio streams. |
-| **Spotify** | 🟡 Requires API Keys | Set `SPOTIFY_CLIENT_ID` & `SPOTIFY_CLIENT_SECRET` in `.env` and `application.yml`. Otherwise search by song title: `/play <title>`. |
-| **Apple Music** | ⚪ Disabled by Default | Requires an Apple Developer Media API token (`mediaAPIToken`). Disabled by default to prevent startup crashes. |
-| **SoundCloud** | 🔴 Format Breaks in Lavaplayer | SoundCloud's API currently fails format detection (`Did not detect any supported formats`) in Lavaplayer 2.2.6. |
+| **YouTube** | [ONLINE] Default Search & Streams | Handled by `youtube-plugin` with OAuth support. Primary default search (`/play <title>`) and direct video/playlist links. |
+| **YouTube Music** | [ONLINE] Automated Fallback | Handled by `youtube-plugin`. Automatic search fallback (`ytmsearch:`) if primary search fails. |
+| **Bandcamp** | [ONLINE] Native Stream | Direct audio stream extraction without API keys. |
+| **Twitch** | [ONLINE] Native Stream | Live audio streams supported directly. |
+| **Direct URL** | [ONLINE] Native Stream | Direct MP3, AAC, FLAC, or OGG HTTP/HTTPS audio streams. |
+| **Spotify** | [AUTH] Requires API Keys | Set `SPOTIFY_CLIENT_ID` & `SPOTIFY_CLIENT_SECRET` in `.env` and `application.yml`. Otherwise search by song title: `/play <title>`. |
+| **Apple Music** | [INACTIVE] Disabled by Default | Requires an Apple Developer Media API token (`mediaAPIToken`). Disabled by default to prevent startup crashes. |
+| **SoundCloud** | [UNSUPPORTED] Format Breaks in Lavaplayer | SoundCloud's API currently fails format detection (`Did not detect any supported formats`) in Lavaplayer 2.2.6. |
 
 ---
 
-## 🧪 Testing and Verification
+## 彡 Testing and Verification
 
 Void Vibe includes a comprehensive automated test suite testing queue mutations, pagination math, loop modes, volume ranges, permission checks, and music service provider classification/fallback routing.
 
@@ -238,7 +238,7 @@ tests\test_validators.py ..............                                  [100%]
 
 ---
 
-## 🌐 24/7 Production VPS Deployment (Ubuntu 22.04 / 24.04 LTS)
+## ◆ 24/7 Production VPS Deployment (Ubuntu 22.04 / 24.04 LTS)
 
 When you are ready to host Void Vibe 24/7 so it remains online without your local computer running:
 
@@ -320,7 +320,7 @@ sudo journalctl -u voidvibe.service -f
 
 ---
 
-## 🔒 Security Guidance
+## ※ Security Guidance
 
 - **Never Commit Secrets**: Ensure `.env` is listed in `.gitignore` and never committed to version control.
 - **Token Protection**: If your Discord Bot Token or Lavalink Password is ever exposed, regenerate it immediately in the Discord Developer Portal.
