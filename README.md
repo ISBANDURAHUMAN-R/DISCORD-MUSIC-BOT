@@ -4,8 +4,20 @@
 
 # ◈ Void Vibe — Discord Music Bot
 
+[![CI](https://github.com/ISBANDURAHUMAN-R/DISCORD-MUSIC-BOT/actions/workflows/ci.yml/badge.svg)](https://github.com/ISBANDURAHUMAN-R/DISCORD-MUSIC-BOT/actions)
+
 ## ◆ About the Project
 Void Vibe is an audio streaming Discord bot built with Python, discord.py, and Lavalink v4. It provides independent per-server audio playback queues, interactive Discord button controls, and multi-source audio resolution across Discord voice channels. The bot features automated voice state cleanup, disconnect timers, and credential masking.
+
+```mermaid
+flowchart TD
+    User["Discord Guild Members"] --> Slash["Discord Voice & Slash Commands (/play, /queue, /volume)"]
+    Slash --> Gateway["Discord Gateway & discord.py 2.x"]
+    Gateway --> Cogs["Music Cogs & State Validators"]
+    Cogs --> Wavelink["Wavelink 3.5 Client"]
+    Wavelink -->|"WebSocket IPC & Audio Stream"| Lavalink["Lavalink v4 Java Node"]
+    Lavalink -->|"PCM Audio Packets"| VoiceChannel["Discord Voice Channel UDP"]
+```
 
 ## ❖ Key Features
 - Lavalink v4 architecture powered by Wavelink 3.5 with WebSocket audio encoding.
