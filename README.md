@@ -11,12 +11,12 @@ Void Vibe is an audio streaming Discord bot built with Python, discord.py, and L
 
 ```mermaid
 flowchart TD
-    User["Discord Guild Members"] --> Slash["Discord Voice &<br/>Slash Commands<br/>(/play, /queue, /volume)"]
-    Slash --> Gateway["Discord Gateway &<br/>discord.py 2.x"]
-    Gateway --> Cogs["Music Cogs &<br/>State Validators"]
-    Cogs --> Wavelink["Wavelink 3.5 Client"]
-    Wavelink -->|"WebSocket IPC &<br/>Audio Stream"| Lavalink["Lavalink v4 Java Node"]
-    Lavalink -->|"PCM Audio Packets"| VoiceChannel["Discord Voice Channel (UDP)"]
+    User["&nbsp; Discord Guild &nbsp;<br/>&nbsp; Members &nbsp;"] --> Slash["&nbsp; Discord Slash &nbsp;<br/>&nbsp; Commands &nbsp;<br/>&nbsp; (/play, /queue) &nbsp;"]
+    Slash --> Gateway["&nbsp; Discord Gateway &nbsp;<br/>&nbsp; &amp; discord.py &nbsp;"]
+    Gateway --> Cogs["&nbsp; Music Cogs &amp; &nbsp;<br/>&nbsp; State Validators &nbsp;"]
+    Cogs --> Wavelink["&nbsp; Wavelink 3.5 &nbsp;<br/>&nbsp; Client &nbsp;"]
+    Wavelink -->|"&nbsp; WebSocket IPC &amp; &nbsp;<br/>&nbsp; Audio Stream &nbsp;"| Lavalink["&nbsp; Lavalink v4 &nbsp;<br/>&nbsp; Java Node &nbsp;"]
+    Lavalink -->|"&nbsp; PCM Packets &nbsp;"| VoiceChannel["&nbsp; Discord Voice &nbsp;<br/>&nbsp; Channel (UDP) &nbsp;"]
 ```
 
 ## ❖ Key Features
